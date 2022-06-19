@@ -1,0 +1,10 @@
+{
+  "name": "jpegdegens",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Andres Uris <andres.urismontilla@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "hardhat": "^2.9.9"
+  }
+}
