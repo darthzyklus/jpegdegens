@@ -18,6 +18,10 @@ describe("Hero", function () {
     contract = await deployContract();
   })
 
+  it("should get a zero hero array", async function() {
+    expect(await contract.getHeroes()).to.deep.equal([]);
+  })
+
   it("should fail at creating hero cause of payment", async function() {
     let e;
 
