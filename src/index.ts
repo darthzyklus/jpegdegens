@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import Contract from "../artifacts/contracts/Counter.sol/Counter.json"
 
 function getEth() {
   //@ts-ignore
@@ -30,15 +31,34 @@ async function run() {
     throw new Error("please allow access to your metamask accounts")
   }
 
-  const contract = new ethers.Contract(
-    "0x5fbdb2315678afecb367f032d93f642f64180aa3", // address?
-    [
-      "function hello() public pure returns(string memory)"
-    ], // contract interface?
-    new ethers.providers.Web3Provider(getEth())
-  )
+  const address = process.env.CONTRACT_ADDRESS;
+  const provider = new ethers.providers.Web3Provider(getEth()).getSigner();
 
-  document.body.innerHTML = await contract.hello()
+  const contract = new ethers.Contract(address, Contract.abi, provider);
+
+  const el = document.createElement('div')
+  const button = document.createElement('button')
+
+  button.innerText = "increment"
+
+  async function setCounter(count?: number) {
+    el.innerHTML = count || await contract.getCounter();
+  }
+
+  button.onclick = async function() {
+    const tx = await contract.count();
+    await tx.wait();
+    setCounter();
+  }
+
+  contract.on(contract.filters.CounterInc(), function (count) {
+    setCounter(count)
+  })
+
+  setCounter();
+
+  document.body.appendChild(el);
+  document.body.appendChild(button);
 }
 
 run();
